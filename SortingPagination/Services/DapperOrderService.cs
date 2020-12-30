@@ -12,12 +12,7 @@ namespace SortingPagination.Services
     {
         private readonly SqlConnection connection;
 
-        public DapperOrderService(string connectionString)
-        {
-            connection = new SqlConnection(connectionString);
-        }
-
-        public void Dispose() => connection.Dispose();
+        public DapperOrderService(string connectionString) => connection = new SqlConnection(connectionString);
 
         public async Task<ListResult<Order>> GetAsync(int pageIndex, int itemsPerPage, string orderBy)
         {
@@ -37,6 +32,12 @@ namespace SortingPagination.Services
 
             var result = new ListResult<Order>(orders.Take(itemsPerPage), totalCount, orders.Count() > itemsPerPage);
             return result;
+        }
+
+        public void Dispose()
+        {
+            connection.Dispose();
+            GC.SuppressFinalize(this);
         }
     }
 }
